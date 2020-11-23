@@ -24,7 +24,8 @@ class OpenCVConan(ConanFile):
                "with_openexr": [True, False],
                "with_eigen": [True, False],
                "with_webp": [True, False],
-               "with_gtk": [True, False]}
+               "with_gtk": [True, False],
+               "with_v4l": [True, False]}
     default_options = {"shared": False,
                        "fPIC": True,
                        "parallel": False,
@@ -36,7 +37,8 @@ class OpenCVConan(ConanFile):
                        "with_openexr": True,
                        "with_eigen": True,
                        "with_webp": True,
-                       "with_gtk": True}
+                       "with_gtk": True,
+                       "with_v4l": False}
     exports_sources = "CMakeLists.txt"
     generators = "cmake", "cmake_find_package"
     _cmake = None
@@ -56,6 +58,7 @@ class OpenCVConan(ConanFile):
     def config_options(self):
         if self.settings.os == "Windows":
             del self.options.fPIC
+            del self.options.with_v4l
         if self.settings.os != "Linux":
             del self.options.gtk
 
@@ -202,7 +205,7 @@ class OpenCVConan(ConanFile):
         self._cmake.definitions["WITH_PVAPI"] = False
         self._cmake.definitions["WITH_QT"] = False
         self._cmake.definitions["WITH_QUIRC"] = False
-        self._cmake.definitions["WITH_V4L"] = False
+        self._cmake.definitions["WITH_V4L"] = self.options.get_safe("with_v4l", False)
         self._cmake.definitions["WITH_VA"] = False
         self._cmake.definitions["WITH_VA_INTEL"] = False
         self._cmake.definitions["WITH_VTK"] = False
